@@ -1,9 +1,8 @@
 node_modules/
-.env
-.env.*
 !.env.example
 uploads/
 coverage/
 .test-*/
 *.log
 .DS_Store
+config.bat
