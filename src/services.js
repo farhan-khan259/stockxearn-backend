@@ -54,13 +54,13 @@ export const contentDefaults = {
   announcementLink: "",
   announcementImage: "",
   popupEnabled: true,
-  popupTitle: "Welcome to StockXEarn",
+  popupTitle: "StockXEarn launches 20 November 2026",
   popupBody:
-    "Explore your workspace, review plan terms, and contact our team whenever you need help.",
+    "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
   popupImage: "",
-  popupButton: "Explore plans",
-  popupLink: "/app/plans",
-  popupVersion: 1,
+  popupButton: "Join WhatsApp channel",
+  popupLink: "https://whatsapp.com/channel/0029VbE0BreEAKWD5raKGd1H",
+  popupVersion: 2,
   faqs: [
     {
       question: "How soon do plan payouts begin?",
@@ -170,6 +170,29 @@ export async function initialize() {
     { key: "site" },
     { $setOnInsert: contentDefaults },
     { upsert: true },
+  );
+  // Publish the one-time launch notice for installations still using the
+  // previous default welcome popup. Admin-customized popup versions remain
+  // untouched, and future edits continue to use the regular popup controls.
+  await Content.updateOne(
+    {
+      key: "site",
+      $or: [
+        { popupVersion: { $exists: false } },
+        { popupVersion: { $lt: 2 } },
+      ],
+    },
+    {
+      $set: {
+        popupEnabled: contentDefaults.popupEnabled,
+        popupTitle: contentDefaults.popupTitle,
+        popupBody: contentDefaults.popupBody,
+        popupImage: contentDefaults.popupImage,
+        popupButton: contentDefaults.popupButton,
+        popupLink: contentDefaults.popupLink,
+        popupVersion: contentDefaults.popupVersion,
+      },
+    },
   );
 }
 export async function notify(
