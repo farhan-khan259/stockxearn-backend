@@ -245,7 +245,8 @@ async function paged(model, filter, req, res, populate, select, countStatuses) {
     .sort({ createdAt: -1 })
     .skip((page - 1) * 20)
     .limit(20);
-  if (populate) q = q.populate(populate, "name phone email");
+  if (populate === "code") q = q.populate("code", "code");
+  else if (populate) q = q.populate(populate, "name phone email");
   if (select) q = q.select(select);
   const countPromises = countStatuses
     ? countStatuses.map((status) => model.countDocuments({ status }))

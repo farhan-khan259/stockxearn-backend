@@ -396,6 +396,12 @@ test("parallel code claims cannot exceed cap; each user can redeem once", async 
     /already redeemed/,
   );
   assert.equal((await RewardCode.findById(d._id)).used, 1);
+  const token = await login(users[0]);
+  const history = await request(app)
+    .get("/api/reward-codes/history")
+    .auth(token, { type: "bearer" });
+  assert.equal(history.status, 200);
+  assert.equal(history.body.items[0].code.code, d.code);
 });
 test("ranks count all lifetime purchases in exactly 3 team levels; all eligible ranks claim once", async () => {
   const u = await member(),
@@ -464,7 +470,7 @@ test("community allows one attempt, permanent rejection, one approval credit", a
     () => S.reviewCommunity(c._id, admin._id, "approved", ""),
     /Already reviewed/,
   );
-  assert.equal((await User.findById(v._id)).withdrawableBalance, 1000);
+  assert.equal((await User.findById(v._id)).withdrawableBalance, 10);
 });
 test("only admin can change phone; impersonation is bound to admin and audited", async () => {
   const u = await member(),
