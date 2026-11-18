@@ -1365,10 +1365,6 @@ app.get(
   }),
 );
 app.get(
-  "/api/admin/audit",
-  wrap((req, res) => paged(Audit, {}, req, res, "actor")),
-);
-app.get(
   "/api/admin/reports",
   wrap(async (req, res) => {
     const flow = await Transaction.aggregate([
