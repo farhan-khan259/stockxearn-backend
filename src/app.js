@@ -233,7 +233,7 @@ const admin = (req, res, next) =>
   req.user.role === "admin" && !req.actor
     ? next()
     : res.status(403).json({ message: "Administrator access required" });
-async function paged(model, filter, req, res, populate, select) {
+async function paged(model, filter, req, res, populate, select, countStatuses) {
   const page = z.coerce
     .number()
     .int()
@@ -247,8 +247,26 @@ async function paged(model, filter, req, res, populate, select) {
     .limit(20);
   if (populate) q = q.populate(populate, "name phone email");
   if (select) q = q.select(select);
-  const [items, total] = await Promise.all([q, model.countDocuments(filter)]);
-  res.json({ items, total, page, pages: Math.max(1, Math.ceil(total / 20)) });
+  const countPromises = countStatuses
+    ? countStatuses.map((status) => model.countDocuments({ status }))
+    : [];
+  const [items, total, ...statusCounts] = await Promise.all([
+    q,
+    model.countDocuments(filter),
+    ...countPromises,
+  ]);
+  const counts = countStatuses
+    ? Object.fromEntries(
+        countStatuses.map((status, index) => [status, statusCounts[index]]),
+      )
+    : undefined;
+  res.json({
+    items,
+    total,
+    page,
+    pages: Math.max(1, Math.ceil(total / 20)),
+    ...(counts ? { counts } : {}),
+  });
 }
 const sum = async (model, match, field = "amount") =>
   (
@@ -1135,7 +1153,15 @@ for (const [route, model, review, actions] of [
       const status = req.query.status
         ? z.enum(["pending", ...actions]).parse(req.query.status)
         : null;
-      return paged(model, status ? { status } : {}, req, res, "user");
+      return paged(
+        model,
+        status ? { status } : {},
+        req,
+        res,
+        "user",
+        undefined,
+        ["pending", ...actions],
+      );
     }),
   );
   app.post(
