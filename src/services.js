@@ -20,6 +20,7 @@ import {
 import {
   PLAN_DATA,
   RANK_DATA,
+  LEGACY_RANK_DATA,
   DAY,
   payoutForDay,
   pkrToUsdCents,
@@ -120,12 +121,36 @@ export async function initialize() {
       { $set: p },
     );
   }
-  for (const r of RANK_DATA)
-    await Rank.updateOne(
-      { level: r.level },
-      { $setOnInsert: r },
-      { upsert: true },
-    );
+  for (let i = 0; i < RANK_DATA.length; i++) {
+    const r = RANK_DATA[i];
+    const existing = await Rank.findOne({ level: r.level });
+    if (!existing) {
+      await Rank.create(r);
+      continue;
+    }
+
+    const [legacyName, legacyPersonal, legacyTeam, legacyReward] =
+      LEGACY_RANK_DATA[i];
+    const isDefault =
+      existing.name === legacyName &&
+      existing.personal === legacyPersonal * 100 &&
+      existing.team === legacyTeam * 100 &&
+      existing.reward === legacyReward * 100;
+    if (isDefault) {
+      await Rank.updateOne(
+        { _id: existing._id },
+        {
+          $set: {
+            name: r.name,
+            personal: r.personal,
+            team: r.team,
+            reward: r.reward,
+            icon: r.icon,
+          },
+        },
+      );
+    }
+  }
   await Setting.updateOne(
     { key: "payment" },
     { $setOnInsert: defaults },

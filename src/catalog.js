@@ -27,7 +27,7 @@ export const PLAN_DATA = [
     "60 scheduled daily payouts. Your initial investment is recovered through the first 10 scheduled payouts.",
   };
 });
-export const RANK_DATA = [
+export const LEGACY_RANK_DATA = [
   ["Market Starter", 1000, 10000, 500, "Sprout"],
   ["Equity Associate", 2500, 25000, 800, "BriefcaseBusiness"],
   ["Portfolio Builder", 5000, 50000, 1000, "Layers"],
@@ -38,6 +38,18 @@ export const RANK_DATA = [
   ["Capital Executive", 32000, 320000, 3500, "ShieldCheck"],
   ["Market Principal", 40000, 400000, 4000, "Gem"],
   ["Exchange Elite", 50000, 500000, 5000, "Crown"],
+];
+export const RANK_DATA = [
+  ["Market Starter", 10, 30, 1, "Sprout"],
+  ["Equity Associate", 25, 75, 2.5, "BriefcaseBusiness"],
+  ["Portfolio Builder", 50, 150, 5, "Layers"],
+  ["Capital Specialist", 80, 240, 8, "ChartNoAxesCombined"],
+  ["Investment Strategist", 120, 360, 12, "Compass"],
+  ["Senior Strategist", 180, 540, 18, "Award"],
+  ["Portfolio Director", 250, 750, 25, "Building2"],
+  ["Capital Executive", 320, 960, 32, "ShieldCheck"],
+  ["Market Principal", 400, 1200, 40, "Gem"],
+  ["Exchange Elite", 500, 1500, 50, "Crown"],
 ].map(([name, personal, team, reward, icon], i) => ({
   level: i + 1,
   name,
