@@ -590,14 +590,14 @@ export async function reviewCommunity(id, admin, action, note) {
     if (action === "approved") {
       await User.updateOne(
         { _id: c.user },
-        { $inc: { withdrawableBalance: 1000 } },
+        { $inc: { withdrawableBalance: 10 } },
         { session },
       );
       await ledger(
         session,
         c.user,
         "community_reward",
-        1000,
+        10,
         "in",
         "withdrawable",
         c._id,
