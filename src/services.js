@@ -63,34 +63,44 @@ export const contentDefaults = {
   popupVersion: 1,
   faqs: [
     {
-      question: "When do plan payouts begin?",
+      question: "How soon do plan payouts begin?",
       answer:
-        "The first payout is due 24 hours after purchase. Further payouts follow at 24-hour intervals. The default plans have 60 payouts, and the first 10 recover the initial investment.",
+        "Your first scheduled payout is due 24 hours after a plan purchase. Payouts continue at regular 24-hour intervals according to the plan duration. You can always review each plan's exact schedule before purchasing.",
     },
     {
-      question: "Can I withdraw unused deposits?",
+      question: "Can I withdraw my deposit funds?",
       answer:
-        "Deposits are reserved for purchasing plans. Only profits, commissions and rewards can be withdrawn. A currently active plan and a minimum withdrawal of $1 are required. There is no withdrawal fee.",
+        "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. StockXEarn does not charge a withdrawal fee.",
     },
     {
-      question: "How are payments handled?",
+      question: "How do deposits and withdrawals work?",
       answer:
-        "Easypaisa and JazzCash deposits are manually verified. Withdrawals are sent manually by the operator to your selected bank or wallet. Requests can be submitted 24/7; approval and payment are not instant.",
+        "Deposits through Easypaisa or JazzCash are securely reviewed by an administrator before they are credited. Withdrawals are sent manually to your selected bank or wallet. Requests remain available 24/7, while review and payment may take some time.",
     },
     {
-      question: "What are the investment risks?",
+      question: "How is my account kept secure?",
       answer:
-        "StockXEarn is privately operated. The operator personally invests funds and manages listed payouts. Market losses and operator payment risk exist; a listed payout schedule does not establish a guaranteed market return.",
+        "Use a strong, unique password and never share banking PINs or OTP codes. You can update your password from Security, and the support team may verify ownership before restoring account access.",
     },
     {
-      question: "How do ranks work?",
+      question: "What happens when I reach an investor rank?",
       answer:
-        "Ranks count lifetime plan purchases by you and members in your first three referral levels. Both targets must be met. Each qualifying rank can be claimed once.",
+        "Your personal investment and qualifying team investment are measured across three referral levels. When both targets are met, the milestone becomes eligible and your one-time rank reward can be claimed once.",
     },
     {
-      question: "How do I reset my password?",
+      question: "How can I get help with my account?",
       answer:
-        "Contact support on WhatsApp or through an existing support ticket. After account ownership is checked, an administrator can issue a temporary password. You must change it at your next login.",
+        "Use in-platform Support for tickets or contact WhatsApp support from the recovery page. The team can help with account access, deposits, withdrawals and purchase questions. You may need to confirm ownership before a password reset.",
+    },
+    {
+      question: "How do Community Rewards and Reward Codes work?",
+      answer:
+        "Community Reward allows one approved WhatsApp screenshot submission and credits $0.10 after review. Reward Codes can be redeemed once per member while they remain valid and within their claim limit.",
+    },
+    {
+      question: "Where can I track all my account activity?",
+      answer:
+        "Open Activity for every wallet movement, or use Deposit History and Withdrawal History for payment records. Earnings, purchases, commissions and reward details are also available in their dedicated sections.",
     },
   ],
 };
