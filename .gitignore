@@ -7,3 +7,4 @@ coverage/
 .test-*/
 *.log
 .DS_Store
+config.bat
