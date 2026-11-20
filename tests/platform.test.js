@@ -39,6 +39,15 @@ let db,
   counter = 0;
 const password = "SxTesting!12345",
   key = randomUUID;
+const previousLaunchTitle = (brand) => {
+  const date = new Date(Date.UTC(2026, 10, 21));
+  date.setUTCDate(date.getUTCDate() - 1);
+  const month = new Intl.DateTimeFormat("en", {
+    month: "long",
+    timeZone: "UTC",
+  }).format(date);
+  return `${brand} launches ${date.getUTCDate()} ${month} ${date.getUTCFullYear()}`;
+};
 const png = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6rHkAAAAASUVORK5CYII=",
   "base64",
@@ -131,7 +140,8 @@ test("initialization updates old default brand copy without replacing custom con
           "Meet StockXEarn. A privately operated investment platform with a clear member workspace, transparent records, and personal support.",
         "faqs.1.answer":
           "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. StockXEarn does not charge a withdrawal fee.",
-        popupTitle: "StockXEarn launches 20 November 2026",
+        popupVersion: 2,
+        popupTitle: previousLaunchTitle("StockXEarn"),
         popupBody:
           "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
       },
@@ -170,7 +180,7 @@ test("initialization revises the existing TickerNest launch date", async () => {
     {
       $set: {
         popupVersion: 2,
-        popupTitle: "TickerNest launches 20 November 2026",
+        popupTitle: previousLaunchTitle("TickerNest"),
         popupBody:
           "We are excited to welcome you to TickerNest. Join our WhatsApp channel for launch updates and important member announcements.",
       },
