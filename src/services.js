@@ -215,14 +215,12 @@ export async function initialize() {
         { popupVersion: { $exists: false } },
         { popupVersion: { $lt: 2 } },
         {
-          popupVersion: { $lt: 3 },
-          popupTitle: /^StockXEarn launches \d{1,2} November 2026$/,
+          popupTitle: "StockXEarn launches 20 November 2026",
           popupBody:
             "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
         },
         {
-          popupVersion: { $lt: 3 },
-          popupTitle: /^TickerNest launches \d{1,2} November 2026$/,
+          popupTitle: "TickerNest launches 20 November 2026",
           popupBody:
             "We are excited to welcome you to TickerNest. Join our WhatsApp channel for launch updates and important member announcements.",
         },
