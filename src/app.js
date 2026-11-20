@@ -145,8 +145,8 @@ const sign = (u, actor) =>
     {
       subject: String(u._id),
       expiresIn: actor ? "1h" : "12h",
-      issuer: "stockxearn",
-      audience: "stockxearn-web",
+      issuer: "tickernest",
+      audience: "tickernest-web",
       algorithm: "HS256",
     },
   );
@@ -168,8 +168,8 @@ const auth = wrap(async (req, res, next) => {
     );
     claims = jwt.verify(req.headers.authorization.slice(7), config.secret, {
       algorithms: ["HS256"],
-      issuer: "stockxearn",
-      audience: "stockxearn-web",
+      issuer: ["tickernest", "stockxearn"],
+      audience: ["tickernest-web", "stockxearn-web"],
     });
   } catch {
     ensure(false, "Session expired. Please sign in", 401);

@@ -2,15 +2,16 @@ import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import request from "supertest";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
 import path from "node:path";
 import { MongoMemoryReplSet } from "mongodb-memory-server";
 process.env.JWT_SECRET =
-  "test-only-secret-for-stockxearn-integration-testing-1234567890";
+  "test-only-secret-for-tickernest-integration-testing-1234567890";
 process.env.NODE_ENV = "test";
-process.env.UPLOAD_DIR = "/tmp/stockxearn-test-uploads";
+process.env.UPLOAD_DIR = "/tmp/tickernest-test-uploads";
 const M = await import("../src/models.js");
 const S = await import("../src/services.js");
 const { DAY, PLAN_DATA } = await import("../src/catalog.js");
@@ -72,7 +73,7 @@ before(async () => {
     replSet: { count: 1 },
     binary: { version: "7.0.24" },
   });
-  await mongoose.connect(db.getUri("stockxearn-tests"));
+  await mongoose.connect(db.getUri("tickernest-tests"));
   await S.initialize();
   ({ app } = await import("../src/app.js"));
   admin = await User.create({
@@ -171,6 +172,24 @@ test("public APIs do not expose plan or payment account details", async () => {
     Object.keys((await request(app).get("/api/public/content")).body).sort(),
     ["heroSubtitle", "heroTitle"],
   );
+});
+test("legacy StockXEarn tokens remain valid after the TickerNest issuer change", async () => {
+  const u = await member();
+  const token = jwt.sign(
+    { ver: u.tokenVersion },
+    process.env.JWT_SECRET,
+    {
+      subject: String(u._id),
+      expiresIn: "1h",
+      issuer: "stockxearn",
+      audience: "stockxearn-web",
+      algorithm: "HS256",
+    },
+  );
+  const response = await request(app)
+    .get("/api/me")
+    .auth(token, { type: "bearer" });
+  assert.equal(response.status, 200, response.text);
 });
 test("registration requires referral, consent, matching passwords and normalizes mobile", async () => {
   const d = {
