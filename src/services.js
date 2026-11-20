@@ -29,6 +29,7 @@ export function ensure(ok, message, status = 400) {
   if (!ok) {
     const e = new Error(message);
     e.status = status;
+    e.applicationError = true;
     throw e;
   }
 }

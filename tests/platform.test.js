@@ -173,6 +173,15 @@ test("public APIs do not expose plan or payment account details", async () => {
     ["heroSubtitle", "heroTitle"],
   );
 });
+test("request parser errors do not expose internal stack details", async () => {
+  const response = await request(app)
+    .post("/api/not-a-route")
+    .set("Content-Type", "application/json")
+    .set("Content-Encoding", "unsupported")
+    .send("{}");
+  assert.equal(response.status, 415);
+  assert.equal(response.body.message, "Unable to complete this request");
+});
 test("legacy StockXEarn tokens remain valid after the TickerNest issuer change", async () => {
   const u = await member();
   const token = jwt.sign(

@@ -1457,9 +1457,9 @@ app.use((err, req, res, next) => {
       ? err.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ")
       : err.code === 11000
         ? "Already submitted, claimed, or registered. Refresh to see the current status."
-        : status === 500
-          ? "Unable to complete this request"
-          : err.message;
+        : err instanceof multer.MulterError || err.applicationError === true
+          ? err.message
+          : "Unable to complete this request";
   if (status === 500) console.error(err);
   res.status(status).json({ message });
 });
