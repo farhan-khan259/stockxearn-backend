@@ -81,6 +81,8 @@ app.use(
     limit: process.env.NODE_ENV === "test" ? 10000 : 300,
     standardHeaders: "draft-8",
     legacyHeaders: false,
+    skip: (req) =>
+      req.path === "/auth/register" || req.path === "/auth/login",
   }),
 );
 const wrap = (fn) => (req, res, next) =>
@@ -152,12 +154,6 @@ const sign = (u, actor) =>
   );
 const key = (req) =>
   z.string().min(16).max(100).parse(req.headers["idempotency-key"]);
-const authLimit = rateLimit({
-  windowMs: 900000,
-  limit: 60,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-});
 const auth = wrap(async (req, res, next) => {
   let claims;
   try {
@@ -304,7 +300,6 @@ app.get(
 );
 app.post(
   "/api/auth/register",
-  authLimit,
   wrap(async (req, res) => {
     const d = z
       .object({
@@ -335,7 +330,6 @@ app.post(
 );
 app.post(
   "/api/auth/login",
-  authLimit,
   wrap(async (req, res) => {
     const d = z
       .object({

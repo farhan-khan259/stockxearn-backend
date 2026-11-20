@@ -252,6 +252,20 @@ test("registration requires referral, consent, matching passwords and normalizes
     409,
   );
 });
+test("registration and login are not rate limited", async () => {
+  const registrations = await Promise.all(
+    Array.from({ length: 61 }, () =>
+      request(app).post("/api/auth/register").send({}),
+    ),
+  );
+  assert.ok(registrations.every((response) => response.status === 400));
+  const logins = await Promise.all(
+    Array.from({ length: 61 }, () =>
+      request(app).post("/api/auth/login").send({}),
+    ),
+  );
+  assert.ok(logins.every((response) => response.status === 400));
+});
 test("approved PKR deposits credit USD wallets and pay 8/5/2 once", async () => {
   const a = await member(),
     b = await member(a._id),
