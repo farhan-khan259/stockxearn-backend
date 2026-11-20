@@ -47,16 +47,16 @@ export const contentDefaults = {
   key: "site",
   heroTitle: "A considered approach to your financial future.",
   heroSubtitle:
-    "Meet StockXEarn. A privately operated investment platform with a clear member workspace, transparent records, and personal support.",
+    "Meet TickerNest. A privately operated investment platform with a clear member workspace, transparent records, and personal support.",
   announcementEnabled: false,
   announcementTitle: "",
   announcementBody: "",
   announcementLink: "",
   announcementImage: "",
   popupEnabled: true,
-  popupTitle: "StockXEarn launches 20 November 2026",
+  popupTitle: "TickerNest launches 20 November 2026",
   popupBody:
-    "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
+    "We are excited to welcome you to TickerNest. Join our WhatsApp channel for launch updates and important member announcements.",
   popupImage: "",
   popupButton: "Join WhatsApp channel",
   popupLink: "https://whatsapp.com/channel/0029VbE0BreEAKWD5raKGd1H",
@@ -70,7 +70,7 @@ export const contentDefaults = {
     {
       question: "Can I withdraw my deposit funds?",
       answer:
-        "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. StockXEarn does not charge a withdrawal fee.",
+        "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. TickerNest does not charge a withdrawal fee.",
     },
     {
       question: "How do deposits and withdrawals work?",
@@ -171,15 +171,53 @@ export async function initialize() {
     { $setOnInsert: contentDefaults },
     { upsert: true },
   );
-  // Publish the one-time launch notice for installations still using the
-  // previous default welcome popup. Admin-customized popup versions remain
-  // untouched, and future edits continue to use the regular popup controls.
+  await Content.updateOne(
+    {
+      key: "site",
+      heroSubtitle:
+        "Meet StockXEarn. A privately operated investment platform with a clear member workspace, transparent records, and personal support.",
+    },
+    { $set: { heroSubtitle: contentDefaults.heroSubtitle } },
+  );
+  await Content.updateOne(
+    {
+      key: "site",
+      faqs: {
+        $elemMatch: {
+          question: "Can I withdraw my deposit funds?",
+          answer:
+            "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. StockXEarn does not charge a withdrawal fee.",
+        },
+      },
+    },
+    {
+      $set: {
+        "faqs.$[faq].answer":
+          contentDefaults.faqs[1].answer,
+      },
+    },
+    {
+      arrayFilters: [
+        {
+          "faq.question": "Can I withdraw my deposit funds?",
+          "faq.answer":
+            "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. StockXEarn does not charge a withdrawal fee.",
+        },
+      ],
+    },
+  );
+  // Update the default launch notice without replacing administrator edits.
   await Content.updateOne(
     {
       key: "site",
       $or: [
         { popupVersion: { $exists: false } },
         { popupVersion: { $lt: 2 } },
+        {
+          popupTitle: "StockXEarn launches 20 November 2026",
+          popupBody:
+            "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
+        },
       ],
     },
     {

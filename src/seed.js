@@ -18,7 +18,7 @@ try {
   ensure(!old || old.role === "admin", "Admin email is already in use");
   if (!old) {
     await User.create({
-      name: "StockXEarn Administrator",
+      name: "TickerNest Administrator",
       email,
       password: await bcrypt.hash(password, 12),
       role: "admin",

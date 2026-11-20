@@ -21,7 +21,7 @@ async function tick() {
 await tick();
 const job = cron.schedule("* * * * *", tick);
 const server = app.listen(config.port, "127.0.0.1", () =>
-  console.log(`StockXEarn listening on ${config.port}`),
+  console.log(`TickerNest listening on ${config.port}`),
 );
 async function shutdown() {
   job.stop();

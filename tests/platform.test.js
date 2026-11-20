@@ -28,6 +28,7 @@ const {
   Redemption,
   Community,
   Audit,
+  Content,
 } = M;
 let db,
   dbPath,
@@ -118,6 +119,48 @@ test("10 exact USD plans, 60 payout totals and initial locks; initialization pre
   await S.initialize();
   assert.equal((await Plan.findById(p._id)).name, "Edited name");
   await Plan.updateOne({ _id: p._id }, { $set: { name: "Market Starter" } });
+});
+test("initialization updates old default brand copy without replacing custom content", async () => {
+  await Content.updateOne(
+    { key: "site" },
+    {
+      $set: {
+        heroTitle: "Custom hero title",
+        heroSubtitle:
+          "Meet StockXEarn. A privately operated investment platform with a clear member workspace, transparent records, and personal support.",
+        "faqs.1.answer":
+          "Deposit funds are designed for plan purchases and cannot be withdrawn directly. Profits, commissions and rewards can be withdrawn when you have an active plan and meet the $1 minimum. StockXEarn does not charge a withdrawal fee.",
+        popupTitle: "StockXEarn launches 20 November 2026",
+        popupBody:
+          "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
+      },
+    },
+  );
+  await S.initialize();
+  let content = await Content.findOne({ key: "site" }).lean();
+  assert.equal(content.heroTitle, "Custom hero title");
+  assert.match(content.heroSubtitle, /TickerNest/);
+  assert.match(content.faqs[1].answer, /TickerNest/);
+  assert.match(content.popupTitle, /TickerNest/);
+  assert.match(content.popupBody, /TickerNest/);
+
+  await Content.updateOne(
+    { key: "site" },
+    {
+      $set: {
+        heroSubtitle: "Custom subtitle",
+        "faqs.1.answer": "Custom FAQ answer",
+        popupTitle: "Custom popup title",
+        popupBody: "Custom popup body",
+      },
+    },
+  );
+  await S.initialize();
+  content = await Content.findOne({ key: "site" }).lean();
+  assert.equal(content.heroSubtitle, "Custom subtitle");
+  assert.equal(content.faqs[1].answer, "Custom FAQ answer");
+  assert.equal(content.popupTitle, "Custom popup title");
+  assert.equal(content.popupBody, "Custom popup body");
 });
 test("public APIs do not expose plan or payment account details", async () => {
   assert.equal((await request(app).get("/api/plans")).status, 401);
