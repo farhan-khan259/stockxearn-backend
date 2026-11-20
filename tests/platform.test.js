@@ -142,7 +142,8 @@ test("initialization updates old default brand copy without replacing custom con
   assert.equal(content.heroTitle, "Custom hero title");
   assert.match(content.heroSubtitle, /TickerNest/);
   assert.match(content.faqs[1].answer, /TickerNest/);
-  assert.match(content.popupTitle, /TickerNest/);
+  assert.equal(content.popupTitle, "TickerNest launches 21 November 2026");
+  assert.equal(content.popupVersion, 3);
   assert.match(content.popupBody, /TickerNest/);
 
   await Content.updateOne(
@@ -162,6 +163,23 @@ test("initialization updates old default brand copy without replacing custom con
   assert.equal(content.faqs[1].answer, "Custom FAQ answer");
   assert.equal(content.popupTitle, "Custom popup title");
   assert.equal(content.popupBody, "Custom popup body");
+});
+test("initialization revises the existing TickerNest launch date", async () => {
+  await Content.updateOne(
+    { key: "site" },
+    {
+      $set: {
+        popupVersion: 2,
+        popupTitle: "TickerNest launches 20 November 2026",
+        popupBody:
+          "We are excited to welcome you to TickerNest. Join our WhatsApp channel for launch updates and important member announcements.",
+      },
+    },
+  );
+  await S.initialize();
+  const content = await Content.findOne({ key: "site" }).lean();
+  assert.equal(content.popupTitle, "TickerNest launches 21 November 2026");
+  assert.equal(content.popupVersion, 3);
 });
 test("public APIs do not expose plan or payment account details", async () => {
   assert.equal((await request(app).get("/api/plans")).status, 401);

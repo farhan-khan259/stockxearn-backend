@@ -55,13 +55,13 @@ export const contentDefaults = {
   announcementLink: "",
   announcementImage: "",
   popupEnabled: true,
-  popupTitle: "TickerNest launches 20 November 2026",
+  popupTitle: "TickerNest launches 21 November 2026",
   popupBody:
     "We are excited to welcome you to TickerNest. Join our WhatsApp channel for launch updates and important member announcements.",
   popupImage: "",
   popupButton: "Join WhatsApp channel",
   popupLink: "https://whatsapp.com/channel/0029VbE0BreEAKWD5raKGd1H",
-  popupVersion: 2,
+  popupVersion: 3,
   faqs: [
     {
       question: "How soon do plan payouts begin?",
@@ -218,6 +218,11 @@ export async function initialize() {
           popupTitle: "StockXEarn launches 20 November 2026",
           popupBody:
             "We are excited to welcome you to StockXEarn. Join our WhatsApp channel for launch updates and important member announcements.",
+        },
+        {
+          popupTitle: "TickerNest launches 20 November 2026",
+          popupBody:
+            "We are excited to welcome you to TickerNest. Join our WhatsApp channel for launch updates and important member announcements.",
         },
       ],
     },
